@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "shadow-cljs": "^2.18.0"
+  },
+  "scripts": {
+	"build": "shadow-cljs release app",
+	"watch": "shadow-cljs watch app",
+	"tailwind:build": "tailwindcss -i ./src/tailwind.css -o ./public/css/tailwind.css --minify",
+	"tailwind:watch": "tailwindcss -i ./resources/public/css/screen.css -o ./resources/public/css/main.css --watch"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tailwindcss": "^4.1.13"
+  }
+}

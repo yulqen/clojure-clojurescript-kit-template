@@ -11,7 +11,7 @@
     [integrant.repl.state :as state]
     [kit.api :as kit]
     [lambdaisland.classpath.watch-deps :as watch-deps]      ;; hot loading for deps
-    [yulqen.guestbook.core :refer [start-app]]))
+    [yulqen.guestbook.core :refer [start-app stop-app]]))
 
 ;; uncomment to enable hot loading for deps
 (watch-deps/start! {:aliases [:dev :test]})
@@ -44,5 +44,6 @@
 
 
 (comment
-  (go)
-  (reset))
+ (go)
+ (reset)
+ (stop-app))

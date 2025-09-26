@@ -9,4 +9,6 @@
                       :asset-path "/js"
                       :modules    {:app {:entries [yulqen.guestbook.core]
                                          :init-fn yulqen.guestbook.core/init!}}
-                      :devtools   {:after-load yulqen.guestbook.core/mount-root}}}}
+                      :devtools   {:after-load yulqen.guestbook.core/mount-root
+                                   :watch-dir  "resources/public/css"
+                                   :reload-strategy :page}}}}

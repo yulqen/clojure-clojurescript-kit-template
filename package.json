@@ -5,7 +5,7 @@
   "scripts": {
 	"build": "shadow-cljs release app",
 	"watch": "shadow-cljs watch app",
-	"tailwind:build": "tailwindcss -i ./src/tailwind.css -o ./public/css/tailwind.css --minify",
+	"tailwind:build": "tailwindcss -i ./resources/public/css/screen.css -o ./resources/public/css/tailwind.css --minify",
 	"tailwind:watch": "tailwindcss -i ./resources/public/css/screen.css -o ./resources/public/css/main.css --watch"
   },
   "dependencies": {

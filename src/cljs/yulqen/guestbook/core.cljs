@@ -26,47 +26,60 @@
 
 
 (defn fetch-table-data! []
-      (GET "/api/messages"
-           {:handler (fn [response-body]
-                         (let [message-list (:messages response-body)]
-                           (swap! table-data-state assoc
-                                  :status :ready
-                                  :messages message-list)))
-                     :error-handler (fn [error]
-                                        (swap! table-data-state
-                                               assoc
-                                               :status :error
-                                               :messages nil)
-                                        (js/console "Fetch error:" error))}))
+  (GET "/api/messages"
+       {:handler (fn [response-body]
+                   (let [message-list (:messages response-body)]
+                     (swap! table-data-state assoc
+                            :status :ready
+                            :messages message-list)))
+        :error-handler (fn [error]
+                         (swap! table-data-state
+                                assoc
+                                :status :error
+                                :messages nil)
+                         (js/console "Fetch error:" error))}))
 
+(defn age-background [age]
+  (cond
+    (and (>= age 1) (< age 5)) "bg-red-200"
+    (and (>= age 5) (<= age 8)) "bg-red-400"
+    (and (> age 8) (< age 11)) "bg-red-600"))
+
+(defn heat-colours [colour]
+      (cond
+       (= colour "hot") "bg-red-600"
+       (= colour "warm") "bg-red-300"
+       (= colour "cool") "bg-blue-400"
+       (= colour "mild") "bg-blue-200"
+       (= colour "cold") "bg-blue-600"))
 
 (defn message-table-view [{:keys [status messages]}]
-      (case status
-            :loading [:p "Loading message data"]
-            :error [:p.error "Failed to load data"]
-            :ready
-            [:table {:class "table-auto border border-gray-500 w-full text-center"}
-             [:thead.bg-gray-200
-              [:tr
-               [:th "Message"]
-               [:th "Age"]
-               [:th "Heat"]]]
-             [:tbody.border.border-gray-200
-              (for [message messages]
-                   [:tr.border.border-gray-300 {:key (:message message)}
-                        [:td (:message message)]
-                        [:td (:age message)]
-                        [:td (:heat message)]])]]
-            _ [:p.error "Unexpected application state!"]))
+  (case status
+    :loading [:p "Loading message data"]
+    :error [:p.error "Failed to load data"]
+    :ready
+    [:table {:class "table-auto border border-gray-500 w-full text-center"}
+     [:thead.bg-gray-200
+      [:tr
+       [:th "Message"]
+       [:th "Age"]
+       [:th "Heat"]]]
+     [:tbody.border.border-gray-200
+      (for [message messages]
+        [:tr.border.border-gray-300 {:key (:message message)}
+         [:td  (:message message)]
+         [:td {:class (age-background (:age message))} (:age message)]
+         [:td {:class (heat-colours (:heat message))} (:heat message)]])]]
+    _ [:p.error "Unexpected application state!"]))
 
 
 (defn message-table-container []
-      (r/create-class
-       {:component-did-mount fetch-table-data!
-                             :reagent-render
-                             (fn []
-                               ;; Hand off rendering to the display component
-                                 [message-table-view @table-data-state])}))
+  (r/create-class
+   {:component-did-mount fetch-table-data!
+    :reagent-render
+    (fn []
+      ;; Hand off rendering to the display component
+      [message-table-view @table-data-state])}))
 
 
 (defn table []

@@ -11,7 +11,7 @@
                     :age 10
                     :heat "hot"}
                    {:message "This is a sample message"
-                    :age 5
+                    :age 8
                     :heat "warm"}
                    {:message "Clojure is awesome!"
                     :age 2

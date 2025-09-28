@@ -1,7 +1,8 @@
 (ns yulqen.guestbook.core
-    (:require
-      [reagent.core :as r]
-      [reagent.dom :as d]))
+  (:require
+   [reagent.core :as r]
+   [reagent.dom :as d]
+   [ajax.core :refer [GET]]))
 
 (defn pagga-box []
       [:div {:class "p-4 border rounded-lg bg-blue-200 text-black my-4 shadow-md"}
@@ -17,22 +18,76 @@
        [:p.text-4xl "Count: " @count-atom]
        [:button.bg-red-500.p-1.mt-5.text-white {:on-click #(swap! count-atom inc)} "Increment Me!"]])))
 
+(defn rep-2 [str]
+    (apply str (repeat 2 str)))
+
+(def table-data-state (r/atom {:status :loading
+                               :messages nil}))
+
+
+(defn fetch-table-data! []
+      (GET "/api/messages"
+           {:handler (fn [response-body]
+                         (let [message-list (:messages response-body)]
+                           (swap! table-data-state assoc
+                                  :status :ready
+                                  :messages message-list)))
+                     :error-handler (fn [error]
+                                        (swap! table-data-state
+                                               assoc
+                                               :status :error
+                                               :messages nil)
+                                        (js/console "Fetch error:" error))}))
+
+
+(defn message-table-view [{:keys [status messages]}]
+      (case status
+            :loading [:p "Loading message data"]
+            :error [:p.error "Failed to load data"]
+            :ready
+            [:table {:class "table-auto border border-gray-500 w-full text-center"}
+             [:thead.bg-gray-200
+              [:tr
+               [:th "Message"]
+               [:th "Age"]
+               [:th "Heat"]]]
+             [:tbody.border.border-gray-200
+              (for [message messages]
+                   [:tr.border.border-gray-300 {:key (:message message)}
+                        [:td (:message message)]
+                        [:td (:age message)]
+                        [:td (:heat message)]])]]
+            _ [:p.error "Unexpected application state!"]))
+
+
+(defn message-table-container []
+      (r/create-class
+       {:component-did-mount fetch-table-data!
+                             :reagent-render
+                             (fn []
+                               ;; Hand off rendering to the display component
+                                 [message-table-view @table-data-state])}))
+
+
 (defn table []
-      (let [toss (r/atom "sdsd")]
+      (let [toss (r/atom {:text "Wookka!"
+                                :color "text-green-700"})]
         (fn []
-          [:table {:class "table-auto border border-gray-400 w-full text-center shadow-md"}
-           [:thead {:class "bg-gray-200 text-black"}
-            [:tr.border-slate-200
-             [:th "Big chugga wuggah woo"]
-             [:th "Big Age"]]]
-           [:tbody.text-green-700
-            [:tr.border.border-slate-200
-             [:td.bg-gray-200 {:on-click #(swap! toss (fn [_] "WOOO"))} @toss]
-             [:td 35]
-             [:td 30]]
-            [:tr
-             [:td "Chinger lavesl"]
-             [:td 25]]]])))
+            [:table {:class "table-auto border border-gray-400 w-full text-center shadow-md"}
+                    [:thead {:class "bg-gray-200 text-black"}
+                            [:tr.border-slate-200
+                             [:th "Big chugga wuggah woo"]
+                             [:th "Big Age"]
+                             [:th "Small Age"]]]
+                    [:tbody.text-green-700
+                     [:tr.border.border-slate-200
+                      [:td {:class "bg-yellow-200"
+                                   :on-click #(swap! toss (fn [col] (assoc col :text "ff")))} (:text @toss)]
+                      [:td "sdsd"]
+                      [:td 30]]
+                     [:tr
+                      [:td "Chinger lavesl"]
+                      [:td 25]]]])))
 
 (defn input-field [label-text id]
   (r/with-let [value (r/atom nil)]
@@ -44,10 +99,11 @@
 
 
 (defn home-page []
-      [:div {:class "m-6"}
-            [:div [pagga-box] [counter] [input-field "Name" "name"]]
-            [:div [:h3.text-4xl.font-bold "Welcome to ClojureScript SPA!"]]
-            [:div [:p {:class "bg-yellow-200 text-black my-4"} "This is Javascript free ClojureScript SPA!"]][table]])
+  [:div {:class "m-6"}
+   [:div [pagga-box] [counter] [input-field "Name" "name"]]
+   [:div [message-table-container]]
+   [:div [:h3.text-4xl.font-bold "Welcome to ClojureScript SPA!"]]
+   [:div [:p {:class "bg-yellow-200 text-black my-4"} "This is Javascript free ClojureScript SPA!"]][table]])
 
 
 

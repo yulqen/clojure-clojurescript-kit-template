@@ -1,8 +1,8 @@
 {:nrepl {:port 7002}
  :source-paths ["src/cljs"]
- :dependencies [[binaryage/devtools "1.0.3"]
-                [nrepl "1.1.0"]
+ :dependencies [[nrepl "1.1.0"]
                 [cider/cider-nrepl "0.57.0"]
+                [binaryage/devtools "1.0.7"]
                 [cljs-ajax "0.8.4"] [reagent "2.0.0-alpha2"]]
  :builds       {:app {:target     :browser
                       :output-dir "target/classes/cljsbuild/public/js"

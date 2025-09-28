@@ -37,12 +37,14 @@
     {:get {:no-doc  true
            :swagger {:info {:title "yulqen.guestbook API"}}
            :handler (swagger/create-swagger-handler)}}]
+   ["/messages"
+    {:get #'health/get-messages}]
    ["/health"
     ;; note that use of the var is necessary
     ;; for reitit to reload routes without
     ;; restarting the system
     {:get #'health/healthcheck!}]])
-
+      
 (derive :reitit.routes/api :reitit/routes)
 
 (defmethod ig/init-key :reitit.routes/api

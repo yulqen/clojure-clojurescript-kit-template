@@ -1,9 +1,8 @@
 {:nrepl {:port 7002}
  :source-paths ["src/cljs"]
- :dependencies [[nrepl "1.1.0"]
-                [cider/cider-nrepl "0.57.0"]
+ :dependencies [[cider/cider-nrepl "0.57.0"]
                 [binaryage/devtools "1.0.7"]
-                [cljs-ajax "0.8.4"] [reagent "2.0.0-alpha2"]]
+                [cljs-ajax "0.8.4"] [reagent "1.2.0"]]
  :builds       {:app {:target     :browser
                       :output-dir "target/classes/cljsbuild/public/js"
                       :asset-path "/js"
@@ -11,4 +10,4 @@
                                          :init-fn yulqen.guestbook.core/init!}}
                       :devtools   {:after-load yulqen.guestbook.core/mount-root
                                    :watch-dir  "resources/public/css"
-                                   :reload-strategy :page}}}}
+                                   :reload-strategy :hot}}}}

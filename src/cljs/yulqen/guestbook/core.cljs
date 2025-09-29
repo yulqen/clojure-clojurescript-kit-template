@@ -1,57 +1,55 @@
-(ns yulqen.guestbook.core
+ (ns yulqen.guestbook.core
   (:require
+   [yulqen.guestbook.utils :as utils]
    [reagent.core :as r]
    [reagent.dom :as d]
    [ajax.core :refer [GET]]))
 
+ (comment
+  (ns-publics (find-ns 'reagent-core))
+  (+ 1 2))
+
 (defn pagga-box []
       [:div {:class "p-4 border rounded-lg bg-blue-200 text-black my-4 shadow-md"}
-            [:h3 "PAGGA BOX"]
-            [:p "This is pagga box content"]])
+            [:h3 "PAGGA BOXZ"]
+            [:p "This is pagga box contents"]])
 
 (defn counter []
   ;; The outer function runs once on mount
-  (let [count-atom (r/atom 0)]
-    ;; The inner function runs on every render
-    (fn []
-      [:div.flex.flex-col.items-center.my-4
-       [:p.text-4xl "Count: " @count-atom]
-       [:button.bg-red-500.p-1.mt-5.text-white {:on-click #(swap! count-atom inc)} "Increment Me!"]])))
+      (let [count-atom (r/atom 1002)]
+        ;; The inner function runs on every render
+        (fn []
+            [:div.flex.flex-col.items-center.my-4
+             [:p.text-4xl "Count: " @count-atom]
+             [:button.bg-red-500.p-1.mt-5.text-white {:on-click #(swap! count-atom inc)} "Increment Me!"]])))
 
-(defn rep-2 [str]
-    (apply str (repeat 2 str)))
+(defn rep-2 [s]
+    (apply str (repeat 2 s)))
 
 (def table-data-state (r/atom {:status :loading
                                :messages nil}))
 
+ (comment
+   (apply str (repeat 10 "ssd"))
+   (rep-2 "woo")
+   ,)
+
 
 (defn fetch-table-data! []
-  (GET "/api/messages"
-       {:handler (fn [response-body]
-                   (let [message-list (:messages response-body)]
-                     (swap! table-data-state assoc
-                            :status :ready
-                            :messages message-list)))
-        :error-handler (fn [error]
-                         (swap! table-data-state
-                                assoc
-                                :status :error
-                                :messages nil)
-                         (js/console "Fetch error:" error))}))
+      (GET "/api/messages"
+           {:handler (fn [response-body]
+                         (let [message-list (:messages response-body)]
+                           (swap! table-data-state assoc
+                                  :status :ready
+                                  :messages message-list)))
+                     :error-handler (fn [error]
+                                        (swap! table-data-state
+                                               assoc
+                                               :status :error
+                                               :messages nil)
+                                        (js/console "Fetch error:" error))}))
 
-(defn age-background [age]
-  (cond
-    (and (>= age 1) (< age 5)) "bg-red-200"
-    (and (>= age 5) (<= age 8)) "bg-red-400"
-    (and (> age 8) (< age 11)) "bg-red-600"))
 
-(defn heat-colours [colour]
-      (cond
-       (= colour "hot") "bg-red-600"
-       (= colour "warm") "bg-red-300"
-       (= colour "cool") "bg-blue-400"
-       (= colour "mild") "bg-blue-200"
-       (= colour "cold") "bg-blue-600"))
 
 (defn message-table-view [{:keys [status messages]}]
   (case status
@@ -60,16 +58,18 @@
     :ready
     [:table {:class "table-auto border border-gray-500 w-full text-center"}
      [:thead.bg-gray-200
-      [:tr
+      [:tr.rounded-lg
        [:th "Message"]
        [:th "Age"]
        [:th "Heat"]]]
-     [:tbody.border.border-gray-200
+     [:tbody.border.border-gray-400
       (for [message messages]
-        [:tr.border.border-gray-300 {:key (:message message)}
-         [:td  (:message message)]
-         [:td {:class (age-background (:age message))} (:age message)]
-         [:td {:class (heat-colours (:heat message))} (:heat message)]])]]
+        (let [age-background (utils/age-background (:age message))
+              heat-colours (utils/heat-colours (:heat message))] 
+          [:tr.border.border-gray-300 {:key (:message message)}
+           [:td  (:message message)]
+           [:td {:class age-background} (:age message)]
+           [:td {:class heat-colours } (:heat message)]]))]]
     _ [:p.error "Unexpected application state!"]))
 
 
@@ -113,9 +113,13 @@
 
 (defn home-page []
   [:div {:class "m-6"}
-   [:div [pagga-box] [counter] [input-field "Name" "name"]]
-   [:div [message-table-container]]
    [:div [:h3.text-4xl.font-bold "Welcome to ClojureScript SPA!"]]
+   [:div [counter]]   
+   [:div [pagga-box]
+              
+         [input-field "Name" "name"]]
+   [:div [message-table-container]]
+
    [:div [:p {:class "bg-yellow-200 text-black my-4"} "This is Javascript free ClojureScript SPA!"]][table]])
 
 

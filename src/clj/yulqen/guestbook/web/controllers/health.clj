@@ -7,11 +7,11 @@
 (defn get-messages
         [req]
       (http-response/ok
-       {:messages [{:message "Hello, World!"
+       {:messages [{:message "Hello, cre world!"
                     :age 10
                     :heat "hot"}
                    {:message "This is a sample message"
-                    :age 8
+                    :age 5
                     :heat "warm"}
                    {:message "Clojure is awesome!"
                     :age 2

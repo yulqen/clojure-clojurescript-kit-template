@@ -1,18 +1,30 @@
  (ns yulqen.guestbook.core
-  (:require
-   [yulqen.guestbook.utils :as utils]
-   [reagent.core :as r]
-   [reagent.dom :as d]
-   [ajax.core :refer [GET]]))
+   (:require
+    [yulqen.guestbook.utils :as utils]
+    [reagent.core :as r]
+    [reagent.dom :as d]
+    [ajax.core :refer [GET]]
+    [cljs.pprint :as pprint]))
 
  (comment
-  (ns-publics (find-ns 'reagent-core))
-  (+ 1 2))
+   (ns-publics 'yulqen.guestbook.utils)
+   (utils/age-background 8)
+   ;; => "bg-red-400"
+   (utils/heat-colours "mild")
+   ;; => "bg-blue-200"
+   (+ 1 2)
+   (def r-core
+     (ns-publics 'reagent.core))
+   ,)
 
-(defn pagga-box []
-      [:div {:class "p-4 border rounded-lg bg-blue-200 text-black my-4 shadow-md"}
-            [:h3 "PAGGA BOXZ"]
-            [:p "This is pagga box contents"]])
+ 
+(defn pagga-box [year]
+      [:div {:class "p-4 border rounded-lg bg-blue-100 text-black my-4 shadow-md"}
+       [:div.flex.justify-between
+        [:div
+         [:p.font-bold "PAGGA BOXZ " year]]
+        [:div
+         [:p.flex-auto "This is pagga box contents has a million and one things..."]]]])
 
 (defn counter []
   ;; The outer function runs once on mount
@@ -23,8 +35,8 @@
              [:p.text-4xl "Count: " @count-atom]
              [:button.bg-red-500.p-1.mt-5.text-white {:on-click #(swap! count-atom inc)} "Increment Me!"]])))
 
-(defn rep-2 [s]
-    (apply str (repeat 2 s)))
+ (defn rep-2 [s]
+   (apply str (repeat 2 s)))
 
 (def table-data-state (r/atom {:status :loading
                                :messages nil}))
@@ -56,13 +68,13 @@
     :loading [:p "Loading message data"]
     :error [:p.error "Failed to load data"]
     :ready
-    [:table {:class "table-auto border border-gray-500 w-full text-center"}
-     [:thead.bg-gray-200
+    [:table {:class "table-auto border border-gray-200 w-full text-center"}
+     [:thead.bg-green-400
       [:tr.rounded-lg
-       [:th "Message"]
-       [:th "Age"]
-       [:th "Heat"]]]
-     [:tbody.border.border-gray-400
+       [:th "Messages from..."]
+       [:th "Ages"]
+       [:th "Heat level"]]]
+     [:tbody.border.border-gray-100
       (for [message messages]
         (let [age-background (utils/age-background (:age message))
               heat-colours (utils/heat-colours (:heat message))] 
@@ -72,14 +84,27 @@
            [:td {:class heat-colours } (:heat message)]]))]]
     _ [:p.error "Unexpected application state!"]))
 
+ (comment
+  (message-table-view {:status :ready
+                       :messages [{:message "yonk"
+                                            :age 10
+                                            :heat "mild"}
+                                  {:message "Tinkers!"
+                                            :age 110
+                                            :heat "hot!"}
+                                  {:message "Cookooos"
+                                            :age 34
+                                            :heat "cold"}]})
+   ,)
+
 
 (defn message-table-container []
-  (r/create-class
-   {:component-did-mount fetch-table-data!
-    :reagent-render
-    (fn []
-      ;; Hand off rendering to the display component
-      [message-table-view @table-data-state])}))
+      (r/create-class
+       {:component-did-mount fetch-table-data!
+                             :reagent-render
+                             (fn []
+                               ;; Hand off rendering to the display component
+                                 [message-table-view @table-data-state])}))
 
 
 (defn table []
@@ -102,27 +127,26 @@
                       [:td "Chinger lavesl"]
                       [:td 25]]]])))
 
-(defn input-field [label-text id]
-  (r/with-let [value (r/atom nil)]
-    [:div
-     [:label "The value is: " @value]
-      [:input {:type "text"
-               :value @value
-               :on-change #(reset! value (-> % .-target .-value))}]]))
+ (defn input-field [label-text id]
+   (r/with-let [value (r/atom nil)]
+     [:div
+      [:label.font-bold.mb-2 "Enter some text here: " @value]
+      [:input.border-2.rounded-md.border-blue-500.mb-2.p-2.w-full
+       {:type "text"
+        :value @value
+        :on-change #(reset! value (-> % .-target .-value))}]]))
 
 
 (defn home-page []
   [:div {:class "m-6"}
    [:div [:h3.text-4xl.font-bold "Welcome to ClojureScript SPA!"]]
    [:div [counter]]   
-   [:div [pagga-box]
+   [:div [pagga-box 1992]
               
          [input-field "Name" "name"]]
    [:div [message-table-container]]
 
    [:div [:p {:class "bg-yellow-200 text-black my-4"} "This is Javascript free ClojureScript SPA!"]][table]])
-
-
 
 
 ;; -------------------------

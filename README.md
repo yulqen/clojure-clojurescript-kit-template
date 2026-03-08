@@ -1,5 +1,33 @@
 # guestbook
 
+## March 2026 - kick-off checklist
+
+ In 2 terminals:
+
+ 1. Backend REPL (editor connects here):
+ ```sh
+   clj -M:dev:repl/conjure
+ ```
+
+ 2. Frontend watch:
+ ```sh
+   npm run watch
+ ```
+
+ Optional:
+
+ ```sh
+   npm run tailwind:watch
+ ```
+
+ Then in Vim:
+ - connect to backend nREPL → eval (go)
+ - edit code → eval (reset) as needed
+ - connect to shadow nREPL on localhost:7002 when doing CLJS work
+
+
+--- 
+
 Start a [REPL](#repls) in your editor or terminal of choice.
 
 Start the server with:

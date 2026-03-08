@@ -22,7 +22,7 @@
       [:div {:class "p-4 border rounded-lg bg-blue-100 text-black my-4 shadow-md"}
        [:div.flex.justify-between
         [:div
-         [:p.font-bold "PAGGA BOXZ " year]]
+         [:p.font-bold "PAGGA BOXZ 2026 " year]]
         [:div
          [:p.flex-auto "This is pagga box contents has a million and one things..."]]]])
 
@@ -72,7 +72,7 @@
      [:thead.bg-green-400
       [:tr.rounded-lg
        [:th "Messages from..."]
-       [:th "Ages"]
+       [:th "Sages"]
        [:th "Heat level"]]]
      [:tbody.border.border-gray-100
       (for [message messages]
@@ -108,7 +108,7 @@
 
 
 (defn table []
-      (let [toss (r/atom {:text "Wookka!"
+      (let [toss (r/atom {:text "Wookordsees!"
                                 :color "text-green-700"})]
         (fn []
             [:table {:class "table-auto border border-gray-400 w-full text-center shadow-md"}
@@ -120,7 +120,7 @@
                     [:tbody.text-green-700
                      [:tr.border.border-slate-200
                       [:td {:class "bg-yellow-200"
-                                   :on-click #(swap! toss (fn [col] (assoc col :text "ff")))} (:text @toss)]
+                                   :on-click #(swap! toss (fn [col] (assoc col :text "buncjes")))} (:text @toss)]
                       [:td "sdsd"]
                       [:td 30]]
                      [:tr
@@ -141,7 +141,7 @@
   [:div {:class "m-6"}
    [:div [:h3.text-4xl.font-bold "Welcome to ClojureScript SPA!"]]
    [:div [counter]]   
-   [:div [pagga-box 1992]
+   [:div [pagga-box 1993]
               
          [input-field "Name" "name"]]
    [:div [message-table-container]]
